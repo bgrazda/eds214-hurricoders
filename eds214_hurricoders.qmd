@@ -7,6 +7,7 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(here)
+library(janitor)
 ```
 
 ```{r}
@@ -16,7 +17,24 @@ q2_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_dat
 
 q3_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "QuebradaCuenca3-Bisley.csv"))
 
-prm_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "RioMameyesPuenteRoto.csv""))
+prm_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "RioMameyesPuenteRoto.csv"))
 ```
+
+```{r}
+all_sites <- q1_site %>% 
+  full_join(q2_site) %>% 
+  full_join(q3_site) %>% 
+  full_join(prm_site) 
+
+```
+```{r}
+#selecting for which chemicals
+chem_sites <- all_sites %>% 
+  select(`NO3-N`, `K`, `Sample_ID`) %>% 
+  na.omit() %>% 
+  clean_names()
+```
+
+
 
 
