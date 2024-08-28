@@ -1,0 +1,22 @@
+---
+title: "Group Project"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+q1_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "QuebradaCuenca1-Bisley.csv"))
+
+q2_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "QuebradaCuenca2-Bisley.csv"))
+
+q3_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "QuebradaCuenca3-Bisley.csv"))
+
+prm_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "RioMameyesPuenteRoto.csv""))
+```
+
+
