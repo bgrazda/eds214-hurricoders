@@ -2,6 +2,8 @@
 title: "Group Project"
 format: html
 editor: visual
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -27,14 +29,18 @@ all_sites <- q1_site %>%
   full_join(prm_site) 
 
 ```
+
 ```{r}
 #selecting for which chemicals
 chem_sites <- all_sites %>% 
-  select(`NO3-N`, `K`, `Sample_ID`) %>% 
+  select(`NO3-N`, `K`, `Sample_ID`, Sample_Date) %>% 
   na.omit() %>% 
-  clean_names()
+  clean_names() %>%
+  mutate(year = year(sample_date)) %>%
+  filter(year %in% c(1988:1994))
 ```
 
+```{r}
 
-
+```
 
