@@ -1,0 +1,23 @@
+---
+title: "josh_group"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(here)
+
+```
+
+```{r}
+group_file_path = "/courses/EDS214/group_project/2024/hurricoders/raw_data/"
+```
+
+```{r}
+q1_sight <- read_csv(file.path(group_file_path, "QuebradaCuenca1-Bisley.csv"))
+q2
+
+```
