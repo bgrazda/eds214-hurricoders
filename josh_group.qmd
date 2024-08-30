@@ -1,0 +1,198 @@
+---
+title: "josh_group"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+library(patchwork)
+```
+
+```{r}
+group_file_path = "/courses/EDS214/group_project/2024/hurricoders/raw_data/"
+```
+
+```{r}
+q1_sight <- read_csv(file.path(group_file_path, "QuebradaCuenca1-Bisley.csv"))
+
+q2_site <- read_csv(file.path(group_file_path, "QuebradaCuenca2-Bisley.csv"))
+
+q3_site <- read_csv(file.path(group_file_path, "QuebradaCuenca3-Bisley.csv"))
+
+prm_site <- read_csv(file.path(group_file_path, "RioMameyesPuenteRoto.csv"))
+
+```
+
+Filter data for NO3 and K in areas BQ1, BQ2, BQ3, PRM
+
+```{r}
+full_data_set <- q1_sight %>%
+  full_join(q2_site) %>%
+  full_join(q3_site) %>%
+  full_join(prm_site)
+  
+```
+
+Remove NA and rename new function
+
+```{r}
+chem_sights <- full_data_set %>% 
+  select('NO3-N', 'K', Sample_ID, Sample_Date) %>%
+  filter(between(Sample_Date, as.Date('1990-01-01'), as.Date('1993-12-01'))) %>%
+  clean_names() 
+  
+```
+
+```{r}
+ggplot(chem_sights, aes(x = sample_date, y = no3_n)) + 
+  geom_rect(aes(xmin = as.Date("1990-10-03"),
+                xmax = as.Date("1990-10-09"), 
+                ymin = 0,
+                ymax = 500),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1991-10-28"),
+                xmax = as.Date("1991-11-02"), 
+                ymin = 0,
+                ymax = 500),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1992-08-16"),
+                xmax = as.Date("1992-08-29"), 
+                ymin = 0,
+                ymax = 500),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1993-08-14"),
+                xmax = as.Date("1993-08-17"), 
+                ymin = 0,
+                ymax = 500),
+            fill = "lightblue") +
+  scale_x_date(breaks = scales::breaks_width("1 years"),
+               labels = scales::label_date("'%y")) +
+  scale_y_continuous(limits = c(0, 500), breaks = c(0, 250, 500)) +
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  labs(x = "",
+       y = "Nitrate \n(N03_N mg per L)\n",
+       title = "Hurricane Effects on Nitrate Concentration in Bisley Streams (1990 ~ 1993)",
+       caption = "Hurricane time and duration is represented by blue rectangles. Data from https://www.nhc.noaa.gov/data/") +
+  theme(plot.caption = element_text(hjust = 0, size = 10),
+        plot.title = element_text(hjust = .5, size = 23)) +
+  geom_line() +
+  facet_wrap(vars(sample_id), strip.position = "right" ,ncol = 1) +
+  theme(
+    strip.background = element_blank(), strip.placement = "outside") +
+  theme(
+    panel.background = element_rect(color = "black")) +
+  geom_label(
+    aes(x = as.Date("1990-10-06"), y = 400, label = "H-Klaus"), fill = "antiquewhite1", size = 2.8) + 
+  geom_label(
+    aes(x = as.Date("1991-10-31"), y = 400, label = "H-PS"), fill = "antiquewhite1", size = 2.8) + 
+  geom_label(
+    aes(x = as.Date("1992-08-22"), y = 400, label = "H-Andrew"), fill = "antiquewhite1", size = 2.8) +
+  geom_label(
+    aes(x = as.Date("1993-08-15.5"), y = 400, label = "TS-Cindy"), fill = "antiquewhite1", size = 2.8)
+  
+  
+  
+```
+
+```{r}
+ggplot(chem_sights, aes(x = sample_date, y = k)) +
+  geom_rect(aes(xmin = as.Date("1990-10-03"),
+                xmax = as.Date("1990-10-09"), 
+                ymin = 0,
+                ymax = 3.5),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1991-10-28"),
+                xmax = as.Date("1991-11-02"), 
+                ymin = 0,
+                ymax = 3.5),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1992-08-16"),
+                xmax = as.Date("1992-08-29"), 
+                ymin = 0,
+                ymax = 3.5),
+            fill = "lightblue") +
+  geom_rect(aes(xmin = as.Date("1993-08-14"),
+                xmax = as.Date("1993-08-17"), 
+                ymin = 0,
+                ymax = 3.5),
+             fill = "lightblue") +
+  scale_x_date(breaks = scales::breaks_width("1 years"),
+               labels = scales::label_date("'%y")) +
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = "none") +
+  labs(x = "",
+       y = "Potassium \n(ug per L)\n",
+       title = "Hurricane Effects of Potassium Concentration in Bisley Streams (1990 ~ 1993)",
+       caption = "Hurricane time and duration is represented by blue rectangles. Data from https://www.nhc.noaa.gov/data/") +
+  theme(plot.caption = element_text(hjust = 0, size = 10),
+        plot.title = element_text(hjust = .5, size = 23)) +
+  geom_line() +
+  facet_wrap(vars(sample_id), strip.position = "right" ,ncol = 1) +
+  theme(
+    strip.background = element_blank(), strip.placement = "outside") +
+  theme(
+    panel.background = element_rect(color = "black")) +
+  geom_label(
+    aes(x = as.Date("1990-10-06"), y = 3, label = "H-Klaus"), fill = "antiquewhite1", size = 2.8) + 
+  geom_label(
+    aes(x = as.Date("1991-10-31"), y = 3, label = "H-PS"), fill = "antiquewhite1", size = 2.8) + 
+  geom_label(
+    aes(x = as.Date("1992-08-22"), y = 3, label = "H-Andrew"), fill = "antiquewhite1", size = 2.8) +
+  geom_label(
+    aes(x = as.Date("1993-08-15.5"), y = 3, label = "TS-Cindy"), fill = "antiquewhite1", size = 2.8)
+```
+
+```{r}
+library(tidyverse)
+library(fuzzyjoin)
+library(ggstream)
+library(colorspace)
+library(ggtext)
+library(cowplot)
+
+theme_set(theme_minimal(base_family = "Reem Kufi", base_size = 12))
+theme_update(
+  plot.title = element_text(
+    size = 25,
+    face = "bold",
+    hjust = .5,
+    margin = margin(10, 0, 30, 0)
+  ),
+  plot.caption = element_text(
+    size = 9,
+    color = "grey40",
+    hjust = .5,
+    margin = margin(20, 0, 5, 0)
+  ),
+  axis.text.y = element_blank(),
+  axis.title = element_blank(),
+  plot.background = element_rect(fill = "grey88", color = NA),
+  panel.background = element_rect(fill = NA, color = NA),
+  panel.grid = element_blank(),
+  panel.spacing.y = unit(0, "lines"),
+  strip.text.y = element_blank(),
+  legend.position = "bottom",
+  legend.text = element_text(size = 9, color = "grey40"),
+  legend.box.margin = margin(t = 30), 
+  legend.background = element_rect(
+    color = "grey40", 
+    size = .3, 
+    fill = "grey95"
+  ),
+  legend.key.height = unit(.25, "lines"),
+  legend.key.width = unit(2.5, "lines"),
+  plot.margin = margin(rep(20, 4))
+)
+
+
+
+
+```

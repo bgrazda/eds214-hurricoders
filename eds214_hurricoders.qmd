@@ -1,6 +1,7 @@
 ---
 title: "Group Project"
 format: html
+editor: source
 editor_options: 
   chunk_output_type: console
 ---
@@ -103,7 +104,4 @@ combined_plot <- k_plot / no3_plot
 
 ggsave(filename = "chemicals_plot.png", plot = combined_plot, width = 8, height = 6)
 ```
-
-
-
 
