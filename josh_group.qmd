@@ -54,22 +54,22 @@ ggplot(chem_sights, aes(x = sample_date, y = no3_n)) +
                 xmax = as.Date("1990-10-09"), 
                 ymin = 0,
                 ymax = 500),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1991-10-28"),
                 xmax = as.Date("1991-11-02"), 
                 ymin = 0,
                 ymax = 500),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1992-08-16"),
                 xmax = as.Date("1992-08-29"), 
                 ymin = 0,
                 ymax = 500),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1993-08-14"),
                 xmax = as.Date("1993-08-17"), 
                 ymin = 0,
                 ymax = 500),
-            fill = "steelblue") +
+            fill = "lightblue") +
   scale_x_date(breaks = scales::breaks_width("1 years"),
                labels = scales::label_date("'%y")) +
   scale_y_continuous(limits = c(0, 500), breaks = c(0, 250, 500)) +
@@ -87,7 +87,7 @@ ggplot(chem_sights, aes(x = sample_date, y = no3_n)) +
   theme(
     strip.background = element_blank(), strip.placement = "outside") +
   theme(
-    panel.background = element_rect(fill = "lightcyan", color = "black")) +
+    panel.background = element_rect(color = "black")) +
   geom_label(
     aes(x = as.Date("1990-10-06"), y = 400, label = "H-Klaus"), fill = "antiquewhite1", size = 2.8) + 
   geom_label(
@@ -107,22 +107,22 @@ ggplot(chem_sights, aes(x = sample_date, y = k)) +
                 xmax = as.Date("1990-10-09"), 
                 ymin = 0,
                 ymax = 3.5),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1991-10-28"),
                 xmax = as.Date("1991-11-02"), 
                 ymin = 0,
                 ymax = 3.5),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1992-08-16"),
                 xmax = as.Date("1992-08-29"), 
                 ymin = 0,
                 ymax = 3.5),
-            fill = "steelblue") +
+            fill = "lightblue") +
   geom_rect(aes(xmin = as.Date("1993-08-14"),
                 xmax = as.Date("1993-08-17"), 
                 ymin = 0,
                 ymax = 3.5),
-             fill = "steelblue") +
+             fill = "lightblue") +
   scale_x_date(breaks = scales::breaks_width("1 years"),
                labels = scales::label_date("'%y")) +
   theme_bw() +
@@ -139,7 +139,7 @@ ggplot(chem_sights, aes(x = sample_date, y = k)) +
   theme(
     strip.background = element_blank(), strip.placement = "outside") +
   theme(
-    panel.background = element_rect(fill = "lightcyan", color = "black")) +
+    panel.background = element_rect(color = "black")) +
   geom_label(
     aes(x = as.Date("1990-10-06"), y = 3, label = "H-Klaus"), fill = "antiquewhite1", size = 2.8) + 
   geom_label(
@@ -151,20 +151,48 @@ ggplot(chem_sights, aes(x = sample_date, y = k)) +
 ```
 
 ```{r}
-p1 / p2
+library(tidyverse)
+library(fuzzyjoin)
+library(ggstream)
+library(colorspace)
+library(ggtext)
+library(cowplot)
 
-              
- 
-```
+theme_set(theme_minimal(base_family = "Reem Kufi", base_size = 12))
+theme_update(
+  plot.title = element_text(
+    size = 25,
+    face = "bold",
+    hjust = .5,
+    margin = margin(10, 0, 30, 0)
+  ),
+  plot.caption = element_text(
+    size = 9,
+    color = "grey40",
+    hjust = .5,
+    margin = margin(20, 0, 5, 0)
+  ),
+  axis.text.y = element_blank(),
+  axis.title = element_blank(),
+  plot.background = element_rect(fill = "grey88", color = NA),
+  panel.background = element_rect(fill = NA, color = NA),
+  panel.grid = element_blank(),
+  panel.spacing.y = unit(0, "lines"),
+  strip.text.y = element_blank(),
+  legend.position = "bottom",
+  legend.text = element_text(size = 9, color = "grey40"),
+  legend.box.margin = margin(t = 30), 
+  legend.background = element_rect(
+    color = "grey40", 
+    size = .3, 
+    fill = "grey95"
+  ),
+  legend.key.height = unit(.25, "lines"),
+  legend.key.width = unit(2.5, "lines"),
+  plot.margin = margin(rep(20, 4))
+)
 
-```{r}
-```
 
-```{r}
-p1 
-
-
-  
 
 
 ```
