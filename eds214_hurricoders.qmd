@@ -1,7 +1,7 @@
 ---
 title: "Group Project"
 format: html
-editor: visual
+editor: source
 editor_options: 
   chunk_output_type: console
 ---
@@ -10,7 +10,13 @@ editor_options:
 library(tidyverse)
 library(here)
 library(janitor)
+library(lubridate)
+library(patchwork)
 ```
+
+# Investigating the impact of Hurricane Hugo on Stream Chemistry data in Luquillo
+
+## Reading in our data ----
 
 ```{r}
 q1_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "QuebradaCuenca1-Bisley.csv"))
@@ -22,25 +28,80 @@ q3_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_dat
 prm_site <- read_csv(here("/courses/EDS214/group_project/2024/hurricoders/raw_data/", "RioMameyesPuenteRoto.csv"))
 ```
 
-```{r}
-all_sites <- q1_site %>% 
-  full_join(q2_site) %>% 
-  full_join(q3_site) %>% 
-  full_join(prm_site) 
+## Joining our data ----
 
+Using 'full_join()' to merge all of our site data.
+
+```{r}
+all_sites <- q1_site |>
+  full_join(q2_site) |>
+  full_join(q3_site) |>
+  full_join(prm_site)
+```
+
+## Cleaning our data ----
+
+```{r}
+chem_sites <- all_sites |>
+  select('NO3-N', 'K', 'Sample_ID', 'Sample_Date') |>
+  mutate(year = year(Sample_Date),
+         month = month(Sample_Date)) |>
+  filter(year %in% c(1988:1994)) |>
+  clean_names()
+
+chem_sites <- chem_sites %>%
+  group_by(sample_id, year, month) |>
+  summarise(
+    avg_no3_n = mean(no3_n, na.rm = TRUE),
+    avg_k = mean(k, na.rm = TRUE)
+  ) %>%
+  mutate(sample_date = make_date(year, month, 1)) |>
+  ungroup()
+
+#chem_sites_long <- chem_sites |>
+#  pivot_longer(cols = c(no3_n, k), names_to = "chemicals", values_to #= "Value")
 ```
 
 ```{r}
-#selecting for which chemicals
-chem_sites <- all_sites %>% 
-  select(`NO3-N`, `K`, `Sample_ID`, Sample_Date) %>% 
-  na.omit() %>% 
-  clean_names() %>%
-  mutate(year = year(sample_date)) %>%
-  filter(year %in% c(1988:1994))
-```
+no3_plot <- ggplot(chem_sites, aes(x = sample_date, linetype = sample_id)) + 
+  geom_line(aes(y = avg_no3_n, group_by = sample_id)) +
+  labs(
+    y = "NO3_N"
+  ) +
+  theme_bw() +
+  theme(
+    axis.ticks.length = unit(-0.1, "cm"),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    legend.position = "none",
+    plot.margin=margin(0,0,1,1,'line'),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+  ) +
+  scale_x_date(position = "top", limits = as.Date(c("1988-12-01", "1992-03-30"))) +
+  scale_y_continuous(limits = c(60, 500)) 
 
-```{r}
+k_plot <- ggplot(chem_sites, aes(x = sample_date, linetype = sample_id)) + 
+  geom_line(aes(y = avg_k, group_by = sample_id)) +
+  labs(
+    x = "Year", 
+    y = "K",
+  ) +
+  theme_bw() +
+  theme(
+    axis.ticks.length = unit(-0.1, "cm"),
+    plot.margin=margin(1,0,0,1,'line'),
+    legend.position = c(0.9, 0.5),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line.x.bottom = element_line(color = "white"),
+    legend.title = element_blank()
+    ) + 
+  scale_x_date(position = "top", limits = as.Date(c("1988-12-01", "1992-01-30"))) +
+  scale_y_continuous(limits = c(0.3, 1.6))
 
+combined_plot <- k_plot / no3_plot
+
+ggsave(filename = "chemicals_plot.png", plot = combined_plot, width = 8, height = 6)
 ```
 
