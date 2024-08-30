@@ -14,6 +14,9 @@ Schaefer, D., McDowell, W., Scatena, F., & Asbury, C. (2000). Effects of hurrica
 
 McDowell, W. 2021. Chemistry of stream water from the Luquillo Mountains ver 4923052. Environmental Data Initiative. https://doi.org/10.6073/pasta/ddb4d61aea2fb18b77540e9b0c424684 
 
+Hurricane Dates:
+https://www.nhc.noaa.gov/data/
+
 Debugging: 
 Run plots step by step, make sure to run libraries and all packages are installed. 
 
